@@ -71,7 +71,7 @@ func main() {
 	if cpuprofile != "" {
 		profFD, err := os.Create(cpuprofile)
 		if err != nil {
-			log.Fatalln(err)
+			log.Fatalf("Cpuprofile: os.Create(): %v", err)
 		}
 
 		pprof.StartCPUProfile(profFD)
@@ -101,20 +101,20 @@ func main() {
 	if filename != "" {
 		fd, err = os.Open(filename)
 		if err != nil {
-			log.Fatalln(err)
+			log.Fatalf("Input: os.Open(): %v", err)
 		}
 		defer fd.Close()
 	}
 
 	md, err := openpgp.ReadMessage(fd, emptyKR{}, newPromptFunction(), nil)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalf("openpgp.ReadMessage(): %v", err)
 	}
 	log.Println("openpgp.ReadMessage() returned without error")
 
 	_, err = io.Copy(os.Stdout, md.UnverifiedBody)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalf("Reading unverified plain text: io.Copy(): %v", err)
 	}
 
 	// Check that any authentication code for the message was
